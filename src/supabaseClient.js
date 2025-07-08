@@ -1,8 +1,73 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || "COLE_AQUI_O_SEU_SUPABASE_URL";
-const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || "COLE_AQUI_A_SUA_CHAVE_ANON";
+// Validate environment variables
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
-export const isConfigured = !supabaseUrl.includes("COLE_AQUI") && !supabaseAnonKey.includes("COLE_AQUI");
+// Check if configuration is valid
+export const isConfigured = Boolean(
+  supabaseUrl && 
+  supabaseAnonKey && 
+  supabaseUrl.startsWith('https://') &&
+  supabaseAnonKey.length > 20 // Basic validation
+);
 
-export const supabase = isConfigured ? createClient(supabaseUrl, supabaseAnonKey) : null;
+// Create client only if properly configured
+export const supabase = isConfigured 
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    })
+  : null;
+
+// Safe wrapper for supabase operations
+export const safeSupabase = {
+  auth: {
+    signInWithPassword: async (credentials) => {
+      if (!supabase) throw new Error('Supabase not configured');
+      return supabase.auth.signInWithPassword(credentials);
+    },
+    signUp: async (credentials) => {
+      if (!supabase) throw new Error('Supabase not configured');
+      return supabase.auth.signUp(credentials);
+    },
+    signOut: async () => {
+      if (!supabase) throw new Error('Supabase not configured');
+      return supabase.auth.signOut();
+    },
+    onAuthStateChange: (callback) => {
+      if (!supabase) throw new Error('Supabase not configured');
+      return supabase.auth.onAuthStateChange(callback);
+    }
+  },
+  from: (table) => {
+    if (!supabase) throw new Error('Supabase not configured');
+    return supabase.from(table);
+  },
+  rpc: (functionName, params) => {
+    if (!supabase) throw new Error('Supabase not configured');
+    return supabase.rpc(functionName, params);
+  }
+};
+
+// Environment validation helper
+export const validateEnvironment = () => {
+  const errors = [];
+  
+  if (!supabaseUrl) {
+    errors.push('REACT_APP_SUPABASE_URL is not set');
+  } else if (!supabaseUrl.startsWith('https://')) {
+    errors.push('REACT_APP_SUPABASE_URL must start with https://');
+  }
+  
+  if (!supabaseAnonKey) {
+    errors.push('REACT_APP_SUPABASE_ANON_KEY is not set');
+  } else if (supabaseAnonKey.length < 20) {
+    errors.push('REACT_APP_SUPABASE_ANON_KEY appears to be invalid');
+  }
+  
+  return errors;
+};
