@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useData } from '../contexts/DataContext';
 import { Settings, MessageSquare, Users, BarChart2, Power, Bot, Menu, X, Tag } from 'lucide-react';
+import { NotificationSystem } from '../components/NotificationSystem';
+
 
 // Importa as diferentes "vistas" do painel
 import DashboardOverview from '../components/DashboardOverview';
@@ -36,9 +38,12 @@ export default function DashboardPage() {
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar Desktop */}
       <aside className="hidden lg:flex w-64 bg-white border-r border-gray-200 flex-col">
-        <div className="h-16 flex items-center px-6 border-b border-gray-200">
-          <Bot className="w-8 h-8 text-sky-600 mr-3" />
-          <h1 className="text-xl font-bold text-gray-900">WhatsApp CRM</h1>
+        <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
+          <div className="flex items-center">
+            <Bot className="w-8 h-8 text-sky-600 mr-3" />
+            <h1 className="text-xl font-bold text-gray-900">WhatsApp CRM</h1>
+          </div>
+          <NotificationSystem />
         </div>
         <nav className="flex-1 px-4 py-6">
           {menuItems.map((item) => (
@@ -75,12 +80,15 @@ export default function DashboardPage() {
             <Bot className="w-8 h-8 text-sky-600 mr-3" />
             <h1 className="text-xl font-bold text-gray-900">CRM</h1>
           </div>
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg hover:bg-gray-100"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="flex items-center space-x-4">
+            <NotificationSystem />
+            <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-lg hover:bg-gray-100"
+            >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+        </div>
         </div>
       </div>
       {mobileMenuOpen && (
