@@ -1,5 +1,5 @@
 // ==================================================================
-// Ficheiro: src/components/SettingsView.js
+// Ficheiro: src/components/SettingsView.js - Com navegação por tab
 // ==================================================================
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, AlertCircle, Loader2, Building, Clock } from 'lucide-react';
@@ -8,12 +8,16 @@ import { supabase } from '../supabaseClient';
 import { Loader } from './ui/Feedback';
 import { BusinessHours } from './BusinessHours';
 
-export function SettingsView() {
+export function SettingsView({ defaultTab = 'business' }) {
   const { tenant, refreshTenant, loading: contextLoading } = useData();
-  const [activeTab, setActiveTab] = useState('business');
+  const [activeTab, setActiveTab] = useState(defaultTab);
   const [formData, setFormData] = useState({});
   const [isSaving, setIsSaving] = useState(false);
   const [notification, setNotification] = useState({ show: false, message: '', type: 'success' });
+
+  useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab]);
 
   useEffect(() => {
     if (tenant) {

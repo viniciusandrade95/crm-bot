@@ -102,7 +102,7 @@ const MiniCalendar = ({ appointments = [] }) => {
 };
 
 // Componente de Getting Started
-const GettingStarted = ({ tenant }) => {
+const GettingStarted = ({ tenant, onNavigate }) => {
   const steps = [
     {
       title: 'Configurar informações do negócio',
@@ -182,7 +182,10 @@ const GettingStarted = ({ tenant }) => {
               </div>
             </div>
             {!step.completed && (
-              <button className="text-sky-600 hover:text-sky-700 text-sm font-medium">
+              <button 
+                onClick={() => onNavigate(step.link)}
+                className="text-sky-600 hover:text-sky-700 text-sm font-medium"
+              >
                 {step.action}
               </button>
             )}
@@ -194,7 +197,7 @@ const GettingStarted = ({ tenant }) => {
 };
 
 // Componente principal do Dashboard
-export default function DashboardOverview() {
+export default function DashboardOverview({ onNavigate }) {
   const { tenant, loading: contextLoading } = useData();
   const [stats, setStats] = useState(null);
   const [loadingStats, setLoadingStats] = useState(true);
@@ -299,7 +302,7 @@ export default function DashboardOverview() {
       {isNewUser ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <GettingStarted tenant={tenant} />
+          <GettingStarted tenant={tenant} onNavigate={onNavigate} />
             
             {/* Quick Actions */}
             <div className="bg-white rounded-xl shadow-sm p-6">
@@ -307,7 +310,10 @@ export default function DashboardOverview() {
                 Ações Rápidas
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group">
+                <button 
+                  onClick={() => onNavigate('services')}
+                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group"
+                >
                   <div className="flex items-center space-x-3">
                     <Tag className="w-5 h-5 text-gray-400 group-hover:text-sky-600" />
                     <span className="font-medium text-gray-700">Adicionar Serviço</span>
@@ -315,7 +321,10 @@ export default function DashboardOverview() {
                   <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-sky-600" />
                 </button>
                 
-                <button className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group">
+                <button 
+                  onClick={() => onNavigate('settings')}
+                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group"
+                >
                   <div className="flex items-center space-x-3">
                     <Settings className="w-5 h-5 text-gray-400 group-hover:text-sky-600" />
                     <span className="font-medium text-gray-700">Configurar Horários</span>
@@ -323,7 +332,10 @@ export default function DashboardOverview() {
                   <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-sky-600" />
                 </button>
                 
-                <button className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group">
+                <button 
+                  onClick={() => onNavigate('customers')}
+                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group"
+                >
                   <div className="flex items-center space-x-3">
                     <Users className="w-5 h-5 text-gray-400 group-hover:text-sky-600" />
                     <span className="font-medium text-gray-700">Importar Clientes</span>
@@ -331,7 +343,10 @@ export default function DashboardOverview() {
                   <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-sky-600" />
                 </button>
                 
-                <button className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group">
+                <button 
+                  onClick={() => onNavigate('messages')}
+                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group"
+                >
                   <div className="flex items-center space-x-3">
                     <MessageSquare className="w-5 h-5 text-gray-400 group-hover:text-sky-600" />
                     <span className="font-medium text-gray-700">Testar Assistente</span>

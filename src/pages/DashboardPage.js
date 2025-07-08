@@ -30,7 +30,7 @@ export default function DashboardPage() {
       case 'customers': return <CustomersView />;
       case 'services': return <ServicesView />;
       case 'settings': return <SettingsView />;
-      default: return <DashboardOverview />;
+      default: return <DashboardOverview onNavigate={setCurrentView} />;
     }
   };
 
