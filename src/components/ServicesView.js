@@ -1,6 +1,7 @@
 // ==================================================================
 // Ficheiro: src/components/ServicesView.js
 // ==================================================================
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit } from 'lucide-react';
 import { ServiceModal } from './ServiceModal';
 import { useData } from '../contexts/DataContext';

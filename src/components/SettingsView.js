@@ -1,7 +1,8 @@
 // ==================================================================
 // Ficheiro: src/components/SettingsView.js
 // ==================================================================
-import { CheckCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { useData } from '../contexts/DataContext';
 import { supabase } from '../supabaseClient';
 import { Loader } from './ui/Feedback';

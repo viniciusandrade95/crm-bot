@@ -27,63 +27,56 @@ export const DataProvider = ({ children }) => {
       
       if (error) throw error;
       setTenant(tenantData);
-    } catch (error)      
-            {console.error("Erro ao buscar dados do tenant:", error);
+    } catch (error) {
+      console.error("Erro ao buscar dados do tenant:", error);
     }
   };
 
   useEffect(() => {
-    // Apenas executa a lógica se o Supabase estiver configurado
     if (!isConfigured) {
       setLoading(false);
       return;
     }
     
-    // Função para buscar todos os dados iniciais do utilizador logado
-    const fetchInitialData = async (user) => {
-      if (!user) {
-        setProfile(null);
-        setTenant(null);
-        return;
-      }
-      try {
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-        setProfile(profileData);
-        if (profileData?.tenant_id) {
-          await fetchTenantData(profileData.tenant_id);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar dados do perfil:", error);
-      }
-    };
-
-    // Função para obter a sessão atual ao carregar a app
-    const getSession = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        setSession(session);
-        await fetchInitialData(session?.user);
-      } catch (error) {
-        console.error("Erro ao obter a sessão:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getSession();
-
-    // Ouve as mudanças de autenticação (login/logout)
+    // Simplificamos a lógica para usar apenas o onAuthStateChange.
+    // Ele é acionado uma vez no carregamento inicial e depois em cada evento de autenticação.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
-      await fetchInitialData(session?.user);
+
+      // Se existir uma sessão, buscamos os dados do utilizador.
+      if (session?.user) {
+        try {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          setProfile(profileData);
+
+          if (profileData?.tenant_id) {
+            await fetchTenantData(profileData.tenant_id);
+          } else {
+            setTenant(null); // Garante que os dados do tenant são limpos se não houver ligação
+          }
+        } catch (error) {
+          console.error("Erro ao buscar dados do perfil/tenant:", error);
+          setProfile(null);
+          setTenant(null);
+        }
+      } else {
+        // Se não houver sessão, limpa os dados do perfil e do tenant.
+        setProfile(null);
+        setTenant(null);
+      }
+      
+      // Ponto crucial: define o loading como false DEPOIS da verificação inicial estar completa.
+      setLoading(false);
     });
 
     // Limpa a subscrição quando o componente é desmontado
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, []);
 
   // Valor a ser partilhado com toda a aplicação

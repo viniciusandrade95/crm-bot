@@ -1,10 +1,11 @@
 // ==================================================================
 // Ficheiro: src/components/MessagesView.js
 // ==================================================================
-import { useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useData } from '../contexts/DataContext';
 import { supabase } from '../supabaseClient';
 import { Bot, User, Send, Loader2, MessageSquare as MessageSquareIcon } from 'lucide-react';
+import { Loader } from './ui/Feedback';
 
 export function MessagesView() {
   const { tenant, loading: contextLoading } = useData();

@@ -1,6 +1,8 @@
 // ==================================================================
 // Ficheiro: src/components/CustomersView.js
 // ==================================================================
+import React from 'react';
+
 export function CustomersView() {
     return (
         <div className="bg-white rounded-xl shadow-sm p-8">
