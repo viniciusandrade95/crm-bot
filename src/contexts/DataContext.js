@@ -1,162 +1,108 @@
-import React, { useState, useEffect, createContext, useContext, useCallback, useRef } from 'react';
-import { safeSupabase, isConfigured, validateEnvironment } from '../supabaseClient';
+import React, { useState, useEffect, createContext, useContext } from 'react';
+import { supabase, isConfigured } from '../supabaseClient';
 
-// Create the Context
 const DataContext = createContext({});
 
-// Create the Data Provider
 export const DataProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [tenant, setTenant] = useState(null);
   const [error, setError] = useState(null);
-  
-  // Ref to track if component is mounted
-  const isMountedRef = useRef(true);
-  
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
 
-  // Safe state setter that checks if component is mounted
-  const safeSetState = useCallback((setter, value) => {
-    if (isMountedRef.current) {
-      setter(value);
-    }
-  }, []);
+  const clearError = () => setError(null);
 
-  // Error handler
-  const handleError = useCallback((error, context) => {
-    console.error(`Error in ${context}:`, error);
-    safeSetState(setError, { message: error.message, context });
-  }, [safeSetState]);
-
-  // Clear error
-  const clearError = useCallback(() => {
-    safeSetState(setError, null);
-  }, [safeSetState]);
-
-  // Function to fetch tenant data with error handling
-  const fetchTenantData = useCallback(async (tenantId) => {
+  const fetchTenantData = async (tenantId) => {
     if (!tenantId) {
-      safeSetState(setTenant, null);
+      setTenant(null);
       return;
     }
 
     try {
-      const { data: tenantData, error } = await safeSupabase
+      const { data, error } = await supabase
         .from('tenants')
         .select('*, services(*)')
         .eq('id', tenantId)
-        .order('service_name', { foreignTable: 'services' })
         .single();
       
       if (error) throw error;
-      
-      safeSetState(setTenant, tenantData);
+      setTenant(data);
     } catch (error) {
-      handleError(error, 'fetchTenantData');
-      safeSetState(setTenant, null);
+      console.error('Error fetching tenant:', error);
+      setTenant(null);
     }
-  }, [safeSetState, handleError]);
+  };
 
-  // Function to fetch profile data
-  const fetchProfileData = useCallback(async (userId) => {
+  const fetchProfileData = async (userId) => {
     try {
-      const { data: profileData, error } = await safeSupabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
       
-      if (error && error.code !== 'PGRST116') { // Not found is OK
+      if (error && error.code !== 'PGRST116') {
         throw error;
       }
       
-      safeSetState(setProfile, profileData);
+      setProfile(data);
       
-      if (profileData?.tenant_id) {
-        await fetchTenantData(profileData.tenant_id);
+      if (data?.tenant_id) {
+        await fetchTenantData(data.tenant_id);
       } else {
-        safeSetState(setTenant, null);
+        setTenant(null);
       }
     } catch (error) {
-      handleError(error, 'fetchProfileData');
-      safeSetState(setProfile, null);
-      safeSetState(setTenant, null);
+      console.error('Error fetching profile:', error);
+      setProfile(null);
+      setTenant(null);
     }
-  }, [safeSetState, handleError, fetchTenantData]);
+  };
 
-  // Auth state change handler
-  const handleAuthStateChange = useCallback(async (event, session) => {
+  const signOut = async () => {
     try {
-      safeSetState(setSession, session);
-      clearError();
-
-      if (session?.user) {
-        await fetchProfileData(session.user.id);
-      } else {
-        safeSetState(setProfile, null);
-        safeSetState(setTenant, null);
-      }
+      await supabase.auth.signOut();
     } catch (error) {
-      handleError(error, 'handleAuthStateChange');
-    } finally {
-      safeSetState(setLoading, false);
+      console.error('Error signing out:', error);
     }
-  }, [safeSetState, clearError, fetchProfileData, handleError]);
+  };
 
-  // Sign out function
-  const signOut = useCallback(async () => {
-    try {
-      setLoading(true);
-      clearError();
-      await safeSupabase.auth.signOut();
-    } catch (error) {
-      handleError(error, 'signOut');
-    } finally {
-      setLoading(false);
-    }
-  }, [clearError, handleError]);
-
-  // Refresh tenant data
-  const refreshTenant = useCallback(async () => {
+  const refreshTenant = async () => {
     if (profile?.tenant_id) {
       await fetchTenantData(profile.tenant_id);
     }
-  }, [profile?.tenant_id, fetchTenantData]);
+  };
 
   useEffect(() => {
     if (!isConfigured) {
-      const envErrors = validateEnvironment();
-      handleError(
-        new Error(`Supabase not configured: ${envErrors.join(', ')}`),
-        'configuration'
-      );
+      setError({ message: 'Supabase not configured', context: 'configuration' });
       setLoading(false);
       return;
     }
 
-    let subscription;
-    
-    try {
-      const { data } = safeSupabase.auth.onAuthStateChange(handleAuthStateChange);
-      subscription = data;
-    } catch (error) {
-      handleError(error, 'auth subscription');
-      setLoading(false);
-    }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
+        
+        setSession(session);
+        clearError();
+
+        if (session?.user) {
+          await fetchProfileData(session.user.id);
+        } else {
+          setProfile(null);
+          setTenant(null);
+        }
+        
+        setLoading(false);
+      }
+    );
 
     return () => {
       subscription?.unsubscribe();
     };
-  }, [handleAuthStateChange, handleError]);
+  }, []);
 
-  // Value to be shared with the entire application
   const value = {
     session,
     profile,
@@ -166,7 +112,6 @@ export const DataProvider = ({ children }) => {
     signOut,
     refreshTenant,
     clearError,
-    // Additional utilities
     isAuthenticated: !!session,
     hasProfile: !!profile,
     hasTenant: !!tenant,
@@ -180,7 +125,6 @@ export const DataProvider = ({ children }) => {
   );
 };
 
-// Custom hook to use the data context
 export const useData = () => {
   const context = useContext(DataContext);
   if (!context) {
@@ -189,12 +133,11 @@ export const useData = () => {
   return context;
 };
 
-// Hook for handling async operations with loading and error states
 export const useAsyncOperation = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  const execute = useCallback(async (operation) => {
+  const execute = async (operation) => {
     try {
       setLoading(true);
       setError(null);
@@ -206,9 +149,9 @@ export const useAsyncOperation = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
   
-  const clearError = useCallback(() => setError(null), []);
+  const clearError = () => setError(null);
   
   return { loading, error, execute, clearError };
 };
