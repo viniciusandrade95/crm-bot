@@ -1,12 +1,7 @@
 // ==================================================================
 // Ficheiro: src/components/ServicesView.js
 // ==================================================================
-import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit } from 'lucide-react';
 import { ServiceModal } from './ServiceModal';
-import { useData } from '../contexts/DataContext';
-import { supabase } from '../supabaseClient';
-import { Loader } from './ui/Feedback';
 
 export function ServicesView() {
   const { tenant, refreshTenant, loading: contextLoading } = useData();
@@ -89,3 +84,4 @@ export function ServicesView() {
     </div>
   );
 }
+
