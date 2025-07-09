@@ -46,7 +46,7 @@ export function BusinessHours() {
     if (tenant?.id) {
       fetchBusinessData();
     }
-  }, [tenant]);
+  }, [tenant, fetchBusinessData]);
 
   const fetchBusinessData = async () => {
     setLoading(true);
