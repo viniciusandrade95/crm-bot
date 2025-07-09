@@ -1,7 +1,7 @@
 // ==================================================================
 // Ficheiro: src/components/BusinessHours.js
 // ==================================================================
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Clock, 
   Calendar, 
