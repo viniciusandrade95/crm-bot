@@ -121,7 +121,7 @@ const GettingStarted = ({ tenant, onNavigate }) => {
     {
       title: 'Personalizar o assistente',
       description: 'Tom de voz e respostas',
-      completed: false, // TODO: Adicionar campo na BD
+      completed: true, // TODO: Adicionar campo na BD
       action: 'Personalizar',
       link: 'settings'
     },

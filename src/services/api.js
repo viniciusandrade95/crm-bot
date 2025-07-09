@@ -1,7 +1,6 @@
 // ==================================================================
 // Ficheiro: src/services/api.js
-// Responsabilidade: Isolar toda a lógica de acesso a dados para a
-// funcionalidade de "Serviços".
+// Responsabilidade: Isolar toda a lógica de acesso a dados.
 // ==================================================================
 import { supabase } from '../supabaseClient';
 
@@ -12,85 +11,91 @@ import { supabase } from '../supabaseClient';
  */
 const handleError = (error, context) => {
   console.error(context, error);
-  // Lança um novo erro mais descritivo para ser capturado pela camada de estado (hook).
   throw new Error(`Erro em "${context}": ${error.message}`);
 };
 
-/**
- * Busca a lista de serviços de um determinado tenant.
- * @param {string} tenantId - O ID do tenant.
- * @returns {Promise<Array>} A lista de serviços.
- */
+// --- Funções de Serviços ---
+
 export const getServices = async (tenantId) => {
-  if (!tenantId) {
-    // Retorna um array vazio se não houver tenantId, evitando erros.
-    return [];
-  }
-
-  const { data, error } = await supabase
-    .from('services')
-    .select('*')
-    .eq('tenant_id', tenantId)
-    .order('service_name', { ascending: true });
-
-  if (error) {
-    handleError(error, 'buscar serviços');
-  }
-
+  if (!tenantId) return [];
+  const { data, error } = await supabase.from('services').select('*').eq('tenant_id', tenantId).order('service_name');
+  if (error) handleError(error, 'buscar serviços');
   return data || [];
 };
 
-/**
- * Adiciona um novo serviço ao banco de dados.
- * @param {Object} serviceData - Os dados do serviço a ser adicionado.
- * @returns {Promise<Object>} O serviço recém-criado.
- */
 export const addService = async (serviceData) => {
-  const { data, error } = await supabase
-    .from('services')
-    .insert([serviceData])
-    .select()
-    .single(); // .select().single() retorna o objeto inserido
-
-  if (error) {
-    handleError(error, 'adicionar serviço');
-  }
-
+  const { data, error } = await supabase.from('services').insert([serviceData]).select().single();
+  if (error) handleError(error, 'adicionar serviço');
   return data;
 };
 
-/**
- * Atualiza um serviço existente.
- * @param {string} serviceId - O ID do serviço a ser atualizado.
- * @param {Object} updates - Os campos a serem atualizados.
- * @returns {Promise<Object>} O serviço atualizado.
- */
 export const updateService = async (serviceId, updates) => {
-  const { data, error } = await supabase
-    .from('services')
-    .update(updates)
-    .eq('id', serviceId)
-    .select()
-    .single();
-
-  if (error) {
-    handleError(error, 'atualizar serviço');
-  }
-
+  const { data, error } = await supabase.from('services').update(updates).eq('id', serviceId).select().single();
+  if (error) handleError(error, 'atualizar serviço');
   return data;
 };
 
-/**
- * Remove um serviço do banco de dados.
- * @param {string} serviceId - O ID do serviço a ser removido.
- */
 export const deleteService = async (serviceId) => {
-  const { error } = await supabase
-    .from('services')
-    .delete()
-    .eq('id', serviceId);
+  const { error } = await supabase.from('services').delete().eq('id', serviceId);
+  if (error) handleError(error, 'remover serviço');
+};
 
-  if (error) {
-    handleError(error, 'remover serviço');
-  }
+// --- Funções de Clientes (Atualizadas) ---
+
+export const getCustomers = async (tenantId) => {
+  if (!tenantId) return [];
+  const { data, error } = await supabase.from('customers').select('*').eq('tenant_id', tenantId).order('name');
+  if (error) handleError(error, 'buscar clientes');
+  return data || [];
+};
+
+export const addCustomer = async (customerData) => {
+  const { data, error } = await supabase.from('customers').insert([customerData]).select().single();
+  if (error) handleError(error, 'adicionar cliente');
+  return data;
+};
+
+export const updateCustomer = async (customerId, updates) => {
+  const { data, error } = await supabase.from('customers').update(updates).eq('id', customerId).select().single();
+  if (error) handleError(error, 'atualizar cliente');
+  return data;
+};
+
+export const deleteCustomer = async (customerId) => {
+  const { error } = await supabase.from('customers').delete().eq('id', customerId);
+  if (error) handleError(error, 'remover cliente');
+};
+
+
+// --- Funções de Agendamentos ---
+
+export const getAppointments = async (tenantId, startDate, endDate) => {
+  if (!tenantId) return [];
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('*, customers(id, name), services(id, service_name)')
+    .eq('tenant_id', tenantId)
+    .gte('appointment_date', startDate)
+    .lte('appointment_date', endDate)
+    .order('appointment_date');
+    
+  if (error) handleError(error, 'buscar agendamentos');
+  return data || [];
+};
+
+export const addAppointment = async (appointmentData) => {
+  const { data, error } = await supabase.from('appointments').insert([appointmentData]).select().single();
+  if (error) handleError(error, 'adicionar agendamento');
+  return data;
+};
+
+export const updateAppointment = async (appointmentId, updates) => {
+  const { data, error } = await supabase.from('appointments').update(updates).eq('id', appointmentId).select().single();
+  if (error) handleError(error, 'atualizar agendamento');
+  return data;
+};
+
+export const deleteAppointment = async (appointmentId) => {
+  const { error } = await supabase.from('appointments').delete().eq('id', appointmentId);
+  if (error) handleError(error, 'remover agendamento');
 };

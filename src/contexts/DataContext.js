@@ -5,7 +5,7 @@ const DataContext = createContext({});
 
 export const DataProvider = ({ children }) => {
   const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // O estado inicial de loading é true.
   const [profile, setProfile] = useState(null);
   const [tenant, setTenant] = useState(null);
 
@@ -35,36 +35,47 @@ export const DataProvider = ({ children }) => {
     }
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      // Se não houver sessão e estivermos em desenvolvimento, tenta fazer login automático.
+      if (!session && process.env.NODE_ENV === 'development') {
+        console.log("Ambiente de desenvolvimento detectado. A tentar auto-login...");
+        const { error: autoLoginError } = await supabase.auth.signInWithPassword({
+          email: 'ouz10577@jioso.com',
+          password: 'ouz10577@jioso.com',
+        });
+
+        if (autoLoginError) {
+          console.error("Falha no auto-login:", autoLoginError.message);
+          setLoading(false);
+          return;
+        }
+        return; 
+      }
+
       setSession(session);
-      setLoading(true);
+      // **CORREÇÃO:** A linha `setLoading(true)` foi removida daqui para evitar o loop.
 
       if (session?.user) {
         try {
-          // Tenta buscar o perfil do utilizador
-          let { data: profileData } = await supabase
+          let { data: profileData, error: profileError } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', session.user.id)
             .single();
 
-          // Se o perfil NÃO existir, é o primeiro login.
-          if (!profileData) {
-            console.log('Perfil não encontrado, a configurar novo utilizador...');
-            // Chama a nossa nova função RPC para criar o perfil e o tenant.
-            const { data: newTenantId, error: rpcError } = await supabase.rpc('setup_new_user');
+          if (profileError && profileError.code === 'PGRST116') {
+            const { error: rpcError } = await supabase.rpc('setup_new_user');
+            if (rpcError) throw new Error(`Erro ao configurar novo utilizador: ${rpcError.message}`);
 
-            if (rpcError) {
-              throw new Error(`Erro ao configurar novo utilizador: ${rpcError.message}`);
-            }
-
-            // Após a criação, busca novamente o perfil que agora deve existir.
-            const { data: newProfileData } = await supabase
+            const { data: newProfileData, error: newProfileError } = await supabase
               .from('profiles')
               .select('*')
               .eq('id', session.user.id)
               .single();
             
+            if (newProfileError) throw newProfileError;
             profileData = newProfileData;
+          } else if (profileError) {
+            throw profileError;
           }
           
           setProfile(profileData);
@@ -76,7 +87,7 @@ export const DataProvider = ({ children }) => {
           }
 
         } catch (error) {
-          console.error("Erro ao buscar ou criar dados do perfil/tenant:", error);
+          console.error("Erro no fluxo de autenticação/criação de perfil:", error);
           setProfile(null);
           setTenant(null);
         }
@@ -85,6 +96,7 @@ export const DataProvider = ({ children }) => {
         setTenant(null);
       }
       
+      // O estado de loading é definido como false aqui, no final de todo o processo.
       setLoading(false);
     });
 

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useData } from '../contexts/DataContext';
-import { Settings, MessageSquare, Users, BarChart2, Power, Bot, Menu, X, Tag } from 'lucide-react';
+import { Settings, MessageSquare, Users, BarChart2, Power, Bot, Menu, X, Tag, Calendar } from 'lucide-react';
 import { NotificationSystem } from '../components/NotificationSystem';
-
 
 // Importa as diferentes "vistas" do painel
 import DashboardOverview from '../components/DashboardOverview';
@@ -10,6 +9,7 @@ import { MessagesView } from '../components/MessagesView';
 import { CustomersView } from '../components/CustomersView';
 import { ServicesView } from '../components/ServicesView';
 import { SettingsView } from '../components/SettingsView';
+import { AppointmentsView } from '../components/AppointmentsView'; // Importa a nova vista
 
 export default function DashboardPage() {
   const { signOut, session } = useData();
@@ -18,6 +18,7 @@ export default function DashboardPage() {
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart2 },
+    { id: 'appointments', label: 'Agenda', icon: Calendar }, // Novo item de menu
     { id: 'messages', label: 'Conversas', icon: MessageSquare },
     { id: 'customers', label: 'Clientes', icon: Users },
     { id: 'services', label: 'Serviços', icon: Tag },
@@ -26,11 +27,12 @@ export default function DashboardPage() {
 
   const renderView = () => {
     switch (currentView) {
+      case 'appointments': return <AppointmentsView />; // Adiciona o novo case
       case 'messages': return <MessagesView />;
       case 'customers': return <CustomersView />;
       case 'services': return <ServicesView />;
       case 'settings': return <SettingsView />;
-      default: return <DashboardOverview onNavigate={setCurrentView} />;
+      default: return <DashboardOverview />;
     }
   };
 
