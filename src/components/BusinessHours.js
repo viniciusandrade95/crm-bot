@@ -16,6 +16,16 @@ import {
 import { supabase } from '../supabaseClient';
 import { useData } from '../contexts/DataContext';
 
+const daysOfWeek = [
+    { id: 0, name: 'Domingo', short: 'Dom' },
+    { id: 1, name: 'Segunda-feira', short: 'Seg' },
+    { id: 2, name: 'Terça-feira', short: 'Ter' },
+    { id: 3, name: 'Quarta-feira', short: 'Qua' },
+    { id: 4, name: 'Quinta-feira', short: 'Qui' },
+    { id: 5, name: 'Sexta-feira', short: 'Sex' },
+    { id: 6, name: 'Sábado', short: 'Sáb' }
+  ];
+
 export function BusinessHours() {
   const { tenant } = useData();
   const [loading, setLoading] = useState(true);
@@ -31,16 +41,6 @@ export function BusinessHours() {
   });
   const [specialDays, setSpecialDays] = useState([]);
   const [notification, setNotification] = useState(null);
-
-  const daysOfWeek = [
-    { id: 0, name: 'Domingo', short: 'Dom' },
-    { id: 1, name: 'Segunda-feira', short: 'Seg' },
-    { id: 2, name: 'Terça-feira', short: 'Ter' },
-    { id: 3, name: 'Quarta-feira', short: 'Qua' },
-    { id: 4, name: 'Quinta-feira', short: 'Qui' },
-    { id: 5, name: 'Sexta-feira', short: 'Sex' },
-    { id: 6, name: 'Sábado', short: 'Sáb' }
-  ];
   
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
