@@ -127,7 +127,7 @@ export const DataProvider = ({ children }) => {
     );
 
     return () => subscription?.unsubscribe();
-  }, []);
+  }, [handleSessionSetup]);
 
   const value = {
     session,
