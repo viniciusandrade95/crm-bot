@@ -42,10 +42,10 @@ export function BusinessHours() {
   const [specialDays, setSpecialDays] = useState([]);
   const [notification, setNotification] = useState(null);
   
-  const showNotification = (message, type = 'success') => {
+  const showNotification = useCallback((message, type = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
-  };
+  }, []);
   
   const fetchBusinessData = useCallback(async () => {
     setLoading(true);
