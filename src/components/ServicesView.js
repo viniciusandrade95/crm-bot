@@ -1,49 +1,77 @@
 // ==================================================================
-// Ficheiro: src/components/ServicesView.js
+// Ficheiro: src/components/ServicesView.js (Refatorado)
+// Responsabilidade: Apenas renderizar a lista de serviços e
+// gerir a abertura/fecho do modal.
 // ==================================================================
-import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit } from 'lucide-react';
+import React, { useState } from 'react';
+import { Plus, Trash2, Edit, AlertCircle } from 'lucide-react';
 import { ServiceModal } from './ServiceModal';
-import { useData } from '../contexts/DataContext';
-import { supabase } from '../supabaseClient';
+import { useServices } from '../hooks/useServices'; // Importa o novo hook
 import { Loader } from './ui/Feedback';
+import { useData } from '../contexts/DataContext';
 
 export function ServicesView() {
-  const { tenant, refreshTenant, loading: contextLoading } = useData();
-  const [services, setServices] = useState([]);
+  // O estado agora vem do hook e do contexto de dados principal
+  const { tenant, loading: contextLoading } = useData();
+  const { services, isLoading, error, addService, updateService, deleteService } = useServices();
+
+  // Estado local apenas para controlar a UI (modal)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingService, setEditingService] = useState(null);
 
-  useEffect(() => {
-    if (tenant?.services) {
-      setServices(tenant.services);
-    }
-  }, [tenant]);
-
-  const openModal = (service = null) => {
+  const handleOpenModal = (service = null) => {
     setEditingService(service);
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {
+  const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingService(null);
   };
 
-  const handleSave = async () => {
-    await refreshTenant();
-    closeModal();
-  };
-
-  const handleDelete = async (serviceId) => {
-    if (window.confirm("Tem a certeza que quer apagar este serviço?")) {
-      await supabase.from('services').delete().eq('id', serviceId);
-      await refreshTenant();
+  // Função que será passada para o modal.
+  // Ela decide se deve chamar a função de adicionar ou de atualizar do hook.
+  const handleSave = async (serviceData) => {
+    if (editingService) {
+      await updateService(editingService.id, serviceData);
+    } else {
+      await addService(serviceData);
     }
   };
 
-  if (contextLoading) return <Loader text="A carregar serviços..." />;
-  if (!tenant) return <div className="text-center p-8 bg-white rounded-lg shadow-sm">Crie as configurações do seu negócio primeiro.</div>;
+  const handleDelete = (serviceId) => {
+    // A confirmação deve ser feita com um modal de confirmação, não com window.confirm.
+    // Por agora, chamamos diretamente a função de apagar.
+    if (window.confirm("Tem a certeza que quer apagar este serviço?")) {
+        deleteService(serviceId);
+    }
+  };
+
+  // Renderiza o estado de carregamento principal
+  if (contextLoading) return <Loader text="A carregar dados do negócio..." />;
+
+  // Adiciona uma verificação para garantir que o tenant existe antes de prosseguir
+  if (!tenant) {
+    return (
+      <div className="text-center p-8 bg-white rounded-lg shadow-sm">
+        <p>Não foi possível carregar os dados do negócio.</p>
+        <p>Por favor, configure as informações do seu negócio primeiro.</p>
+      </div>
+    );
+  }
+  
+  // Renderiza o estado de carregamento dos serviços
+  if (isLoading) return <Loader text="A carregar serviços..." />;
+
+  // Renderiza o estado de erro
+  if (error) {
+    return (
+      <div className="bg-red-50 text-red-700 p-4 rounded-lg flex items-center">
+        <AlertCircle className="w-5 h-5 mr-3" />
+        <p>Ocorreu um erro ao carregar os serviços: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -52,7 +80,7 @@ export function ServicesView() {
           <h2 className="text-2xl font-bold text-gray-900">Serviços</h2>
           <p className="text-gray-600 mt-1">Adicione e gira os serviços que o seu negócio oferece.</p>
         </div>
-        <button onClick={() => openModal()} className="bg-sky-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-sky-700 transition flex items-center w-full sm:w-auto justify-center">
+        <button onClick={() => handleOpenModal()} className="bg-sky-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-sky-700 transition flex items-center w-full sm:w-auto justify-center">
           <Plus className="w-5 h-5 mr-2" />
           Adicionar Serviço
         </button>
@@ -75,7 +103,7 @@ export function ServicesView() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{service.price}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{service.duration}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
-                    <button onClick={() => openModal(service)} className="text-sky-600 hover:text-sky-900"><Edit className="w-5 h-5" /></button>
+                    <button onClick={() => handleOpenModal(service)} className="text-sky-600 hover:text-sky-900"><Edit className="w-5 h-5" /></button>
                     <button onClick={() => handleDelete(service.id)} className="text-red-600 hover:text-red-900"><Trash2 className="w-5 h-5" /></button>
                   </td>
                 </tr>
@@ -85,7 +113,14 @@ export function ServicesView() {
         </div>
         {services.length === 0 && <p className="text-center text-gray-500 py-8">Nenhum serviço adicionado.</p>}
       </div>
-      {isModalOpen && <ServiceModal service={editingService} onClose={closeModal} onSave={handleSave} tenantId={tenant.id} />}
+      {isModalOpen && (
+        <ServiceModal 
+          service={editingService} 
+          onClose={handleCloseModal} 
+          onSave={handleSave}
+          tenantId={tenant.id}
+        />
+      )}
     </div>
   );
 }

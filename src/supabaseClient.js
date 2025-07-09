@@ -1,18 +1,25 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Validate environment variables
+// Valida as variáveis de ambiente
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
-// Check if configuration is valid
+// ==================================================================
+// LINHA DE DEPURAÇÃO ADICIONADA
+// Isto irá mostrar no console do navegador os valores que estão a ser usados.
+console.log('Supabase URL:', supabaseUrl);
+console.log('Supabase Anon Key:', supabaseAnonKey ? 'Encontrada (***)' : 'NÃO ENCONTRADA');
+// ==================================================================
+
+// Verifica se a configuração é válida
 export const isConfigured = Boolean(
   supabaseUrl && 
   supabaseAnonKey && 
   supabaseUrl.startsWith('https://') &&
-  supabaseAnonKey.length > 20 // Basic validation
+  supabaseAnonKey.length > 20 // Validação básica
 );
 
-// Create client only if properly configured
+// Cria o cliente apenas se estiver corretamente configurado
 export const supabase = isConfigured 
   ? createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
@@ -23,37 +30,37 @@ export const supabase = isConfigured
     })
   : null;
 
-// Safe wrapper for supabase operations
+// Wrapper seguro para operações do supabase
 export const safeSupabase = {
   auth: {
     signInWithPassword: async (credentials) => {
-      if (!supabase) throw new Error('Supabase not configured');
+      if (!supabase) throw new Error('Supabase não configurado');
       return supabase.auth.signInWithPassword(credentials);
     },
     signUp: async (credentials) => {
-      if (!supabase) throw new Error('Supabase not configured');
+      if (!supabase) throw new Error('Supabase não configurado');
       return supabase.auth.signUp(credentials);
     },
     signOut: async () => {
-      if (!supabase) throw new Error('Supabase not configured');
+      if (!supabase) throw new Error('Supabase não configurado');
       return supabase.auth.signOut();
     },
     onAuthStateChange: (callback) => {
-      if (!supabase) throw new Error('Supabase not configured');
+      if (!supabase) throw new Error('Supabase não configurado');
       return supabase.auth.onAuthStateChange(callback);
     }
   },
   from: (table) => {
-    if (!supabase) throw new Error('Supabase not configured');
+    if (!supabase) throw new Error('Supabase não configurado');
     return supabase.from(table);
   },
   rpc: (functionName, params) => {
-    if (!supabase) throw new Error('Supabase not configured');
+    if (!supabase) throw new Error('Supabase não configurado');
     return supabase.rpc(functionName, params);
   }
 };
 
-// Environment validation helper
+// Função auxiliar de validação do ambiente
 export const validateEnvironment = () => {
   const errors = [];
   

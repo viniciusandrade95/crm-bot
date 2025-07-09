@@ -1,30 +1,24 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { supabase, isConfigured } from '../supabaseClient';
 
-// Cria o Contexto
 const DataContext = createContext({});
 
-// Cria o Provedor de Dados
 export const DataProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [tenant, setTenant] = useState(null);
 
-  // Função para buscar os dados do negócio (tenant)
   const fetchTenantData = async (tenantId) => {
     if (!tenantId) {
       setTenant(null);
       return;
     }
     try {
-      // ATUALIZAÇÃO: Agora também busca os clientes (customers)
       const { data: tenantData, error } = await supabase
         .from('tenants')
-        .select('*, services(*), customers(*)') // Adicionado customers(*)
+        .select('*, services(*), customers(*)')
         .eq('id', tenantId)
-        .order('service_name', { foreignTable: 'services' })
-        .order('created_at', { foreignTable: 'customers', ascending: false }) // Ordena os clientes por mais recentes
         .single();
       
       if (error) throw error;
@@ -40,17 +34,39 @@ export const DataProvider = ({ children }) => {
       return;
     }
     
-    // Lógica de autenticação e busca de dados inicial
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
+      setLoading(true);
 
       if (session?.user) {
         try {
-          const { data: profileData } = await supabase
+          // Tenta buscar o perfil do utilizador
+          let { data: profileData } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', session.user.id)
             .single();
+
+          // Se o perfil NÃO existir, é o primeiro login.
+          if (!profileData) {
+            console.log('Perfil não encontrado, a configurar novo utilizador...');
+            // Chama a nossa nova função RPC para criar o perfil e o tenant.
+            const { data: newTenantId, error: rpcError } = await supabase.rpc('setup_new_user');
+
+            if (rpcError) {
+              throw new Error(`Erro ao configurar novo utilizador: ${rpcError.message}`);
+            }
+
+            // Após a criação, busca novamente o perfil que agora deve existir.
+            const { data: newProfileData } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
+            
+            profileData = newProfileData;
+          }
+          
           setProfile(profileData);
 
           if (profileData?.tenant_id) {
@@ -58,8 +74,9 @@ export const DataProvider = ({ children }) => {
           } else {
             setTenant(null);
           }
+
         } catch (error) {
-          console.error("Erro ao buscar dados do perfil/tenant:", error);
+          console.error("Erro ao buscar ou criar dados do perfil/tenant:", error);
           setProfile(null);
           setTenant(null);
         }
@@ -76,20 +93,22 @@ export const DataProvider = ({ children }) => {
     };
   }, []);
 
-  // Valor a ser partilhado com toda a aplicação
   const value = {
     session,
     profile,
     tenant,
     loading,
     signOut: () => supabase.auth.signOut(),
-    refreshTenant: () => fetchTenantData(profile?.tenant_id)
+    refreshTenant: async () => {
+      if (profile?.tenant_id) {
+        await fetchTenantData(profile.tenant_id);
+      }
+    }
   };
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 };
 
-// Hook personalizado para usar facilmente os dados
 export const useData = () => {
   const context = useContext(DataContext);
   if (!context) {

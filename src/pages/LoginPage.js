@@ -9,23 +9,61 @@ export default function LoginPage() {
   const [message, setMessage] = useState({ text: '', type: 'error' });
   const [isSignUp, setIsSignUp] = useState(false);
 
+  const handleSignUp = async () => {
+    // 1. Tenta criar o utilizador no Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (authError) {
+      throw new Error(authError.message);
+    }
+    if (!authData.user) {
+      throw new Error('Registo falhou, por favor tente novamente.');
+    }
+
+    // 2. Cria um novo "tenant" (negócio) para este utilizador
+    const { data: tenantData, error: tenantError } = await supabase
+      .from('tenants')
+      .insert([{ business_name: 'Meu Novo Negócio' }])
+      .select()
+      .single();
+
+    if (tenantError) {
+      // Idealmente, aqui deveria haver uma lógica para apagar o utilizador recém-criado
+      // para evitar utilizadores órfãos. Por agora, apenas mostramos o erro.
+      throw new Error(`Erro ao criar o negócio: ${tenantError.message}`);
+    }
+
+    // 3. Cria o perfil público do utilizador, associando-o ao tenant
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .insert([{ id: authData.user.id, tenant_id: tenantData.id }]);
+    
+    if (profileError) {
+      throw new Error(`Erro ao criar o perfil: ${profileError.message}`);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage({ text: '', type: 'error' });
 
-    if (isSignUp) {
-      const { error } = await supabase.auth.signUp({
-        email, password,
-        options: { data: { business_name: 'Meu Novo Negócio' } }
-      });
-      if (error) setMessage({ text: error.message, type: 'error' });
-      else setMessage({ text: 'Verifique seu email para confirmar o cadastro!', type: 'success' });
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) setMessage({ text: error.message, type: 'error' });
+    try {
+      if (isSignUp) {
+        await handleSignUp();
+        setMessage({ text: 'Verifique o seu email para confirmar o registo!', type: 'success' });
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+      }
+    } catch (error) {
+      setMessage({ text: error.message, type: 'error' });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -37,7 +75,7 @@ export default function LoginPage() {
               <Bot className="w-8 h-8 text-sky-600" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900">WhatsApp CRM</h1>
-            <p className="text-gray-600 mt-2">{isSignUp ? 'Crie sua conta para começar' : 'Bem-vindo de volta!'}</p>
+            <p className="text-gray-600 mt-2">{isSignUp ? 'Crie a sua conta para começar' : 'Bem-vindo de volta!'}</p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -55,7 +93,7 @@ export default function LoginPage() {
               </div>
             )}
             <button type="submit" disabled={loading} className="w-full bg-sky-600 text-white py-3 rounded-lg font-medium hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition">
-              {loading ? 'Processando...' : (isSignUp ? 'Criar Conta' : 'Entrar')}
+              {loading ? 'A processar...' : (isSignUp ? 'Criar Conta' : 'Entrar')}
             </button>
           </form>
           <div className="mt-6 text-center">
