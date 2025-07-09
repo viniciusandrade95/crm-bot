@@ -12,14 +12,12 @@ import {
   TrendingUp, 
   Clock, 
   Activity,
-  Calendar,
   Zap,
   ChevronRight,
   Settings,
   AlertCircle,
   CheckCircle,
   ArrowRight,
-  Plus,
   BarChart3
 } from 'lucide-react';
 
@@ -239,7 +237,7 @@ export default function DashboardOverview({ onNavigate }) {
     };
 
     fetchStats();
-  }, [tenant, contextLoading]);
+  }, [tenant, contextLoading, demoStats]);
 
   if (contextLoading || loadingStats) {
     return <Loader text="A carregar dashboard..." />;
