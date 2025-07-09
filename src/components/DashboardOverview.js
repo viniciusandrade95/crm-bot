@@ -1,7 +1,7 @@
 // ==================================================================
 // Ficheiro: src/components/DashboardOverview.js - Versão Completa
 // ==================================================================
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useData } from '../contexts/DataContext';
 import { supabase } from '../supabaseClient';
 import { Loader } from './ui/Feedback';
