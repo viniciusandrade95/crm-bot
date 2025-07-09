@@ -42,13 +42,7 @@ export function BusinessHours() {
     { id: 6, name: 'Sábado', short: 'Sáb' }
   ];
 
-  useEffect(() => {
-    if (tenant?.id) {
-      fetchBusinessData();
-    }
-  }, [tenant, fetchBusinessData]);
-
-  const fetchBusinessData = async () => {
+  const fetchBusinessData = useCallback(async () => {
     setLoading(true);
     try {
       // Buscar horários
@@ -99,8 +93,14 @@ export function BusinessHours() {
     } finally {
       setLoading(false);
     }
-  };
-
+  }, [tenant, showNotification]);
+  
+  useEffect(() => {
+    if (tenant?.id) {
+      fetchBusinessData();
+    }
+  }, [tenant, fetchBusinessData]);
+  
   const handleDayToggle = (dayIndex) => {
     setBusinessHours(prev => prev.map((hour, idx) => 
       idx === dayIndex ? { ...hour, is_open: !hour.is_open } : hour
