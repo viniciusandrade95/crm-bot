@@ -41,7 +41,12 @@ export function BusinessHours() {
     { id: 5, name: 'Sexta-feira', short: 'Sex' },
     { id: 6, name: 'Sábado', short: 'Sáb' }
   ];
-
+  
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
+  
   const fetchBusinessData = useCallback(async () => {
     setLoading(true);
     try {
@@ -136,11 +141,6 @@ export function BusinessHours() {
     setSpecialDays(prev => prev.map(day => 
       day.id === id ? { ...day, [field]: value } : day
     ));
-  };
-
-  const showNotification = (message, type = 'success') => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
   };
 
   const handleSave = async () => {
