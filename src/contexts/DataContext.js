@@ -12,7 +12,7 @@ export const DataProvider = ({ children }) => {
   // Add ref to track auto-login attempt
   const hasAttemptedAutoLogin = useRef(false);
 
-  const fetchTenantData = async (tenantId) => {
+  const fetchTenantData = useCallback(async (tenantId) => {
     if (!tenantId) {
       setTenant(null);
       return;
@@ -29,10 +29,10 @@ export const DataProvider = ({ children }) => {
     } catch (error) {
       console.error("Erro ao buscar dados do tenant:", error);
     }
-  };
+  }, []);
 
   // Separate function to handle session setup
-  const handleSessionSetup = async (session) => {
+  const handleSessionSetup = useCallback(async (session) => {
     if (session?.user) {
       try {
         let { data: profileData, error: profileError } = await supabase
@@ -75,7 +75,7 @@ export const DataProvider = ({ children }) => {
       setTenant(null);
     }
     setLoading(false);
-  };
+  }, [fetchTenantData]); // Adicione fetchTenantData às dependências
 
   // Separate function for dev auto-login
   const attemptDevAutoLogin = async () => {
@@ -110,7 +110,7 @@ export const DataProvider = ({ children }) => {
       } else {
         setLoading(false);
       }
-    });
+    }, [handleSessionSetup]);
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
