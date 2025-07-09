@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useData } from '../contexts/DataContext';
 import { supabase } from '../supabaseClient';
-import { Bot, User, Send, Loader2, MessageSquare as MessageSquareIcon } from 'lucide-react';
+import { Bot, User, Send, MessageSquare as MessageSquareIcon } from 'lucide-react';
 import { Loader } from './ui/Feedback';
 
 export function MessagesView() {
