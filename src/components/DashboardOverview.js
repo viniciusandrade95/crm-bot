@@ -202,7 +202,7 @@ export default function DashboardOverview({ onNavigate }) {
   const [timeFilter, setTimeFilter] = useState('month');
   
   // Dados de exemplo para demonstração
-  const demoStats = {
+  const demoStats = useMemo(() => ({
     total_messages: 0,
     unique_customers: 0,
     total_services: tenant?.services?.length || 0,
@@ -210,7 +210,7 @@ export default function DashboardOverview({ onNavigate }) {
     messages_this_week: 0,
     messages_this_month: 0,
     response_rate: 0
-  };
+  }), [tenant?.services?.length]);
 
   useEffect(() => {
     const fetchStats = async () => {
