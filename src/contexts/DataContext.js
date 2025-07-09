@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
+import React, { useState, useEffect, createContext, useContext, useRef, useCallback } from 'react';
 import { supabase, isConfigured } from '../supabaseClient';
 
 const DataContext = createContext({});
