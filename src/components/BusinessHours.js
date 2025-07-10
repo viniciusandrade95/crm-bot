@@ -1,5 +1,5 @@
 // ==================================================================
-// Ficheiro: src/components/BusinessHours.js
+// Ficheiro: src/components/BusinessHours.js editado por vinicius
 // ==================================================================
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
