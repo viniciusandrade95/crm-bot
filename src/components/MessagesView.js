@@ -60,17 +60,17 @@ export function MessagesView() {
   };
 
   if (contextLoading) return <Loader text="A carregar dados..." />;
-  if (!tenant) return <div className="text-center p-8 bg-white rounded-lg shadow-sm">Configure o seu negócio para ver as conversas.</div>;
+  if (!tenant) return <div className="text-center p-8 bg-card rounded-md shadow-sm">Configure o seu negócio para ver as conversas.</div>;
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] bg-white rounded-xl shadow-sm">
-      <div className="w-full md:w-1/3 lg:w-1/4 border-r border-gray-200 flex flex-col">
-        <div className="p-4 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Conversas</h2>
+    <div className="flex h-[calc(100vh-8rem)] bg-card rounded-lg shadow-sm">
+      <div className="w-full md:w-1/3 lg:w-1/4 border-r border-border flex flex-col">
+        <div className="p-4 border-b border-border">
+          <h2 className="text-xl font-bold text-foreground">Conversas</h2>
         </div>
         <div className="flex-1 overflow-y-auto">
           {loadingMessages && conversations.length === 0 && <Loader text="A buscar..." />}
-          {!loadingMessages && conversations.length === 0 && <p className="p-4 text-sm text-gray-500">Nenhuma conversa encontrada.</p>}
+          {!loadingMessages && conversations.length === 0 && <p className="p-4 text-sm text-muted-foreground">Nenhuma conversa encontrada.</p>}
           {conversations.map((convo) => (
             <button
               key={convo.phone_number}
@@ -79,8 +79,8 @@ export function MessagesView() {
                 selectedConversation?.phone_number === convo.phone_number ? 'bg-sky-100' : ''
               }`}
             >
-              <div className="font-semibold text-gray-800">{convo.phone_number}</div>
-              <p className="text-sm text-gray-500 truncate">{convo.last_message}</p>
+              <div className="font-semibold text-secondary-foreground">{convo.phone_number}</div>
+              <p className="text-sm text-muted-foreground truncate">{convo.last_message}</p>
               <p className="text-xs text-gray-400 mt-1">{new Date(convo.last_message_at).toLocaleString('pt-PT')}</p>
             </button>
           ))}
@@ -89,15 +89,15 @@ export function MessagesView() {
       <div className="flex-1 flex flex-col">
         {selectedConversation ? (
           <>
-            <div className="p-4 border-b border-gray-200">
-              <h3 className="font-bold text-lg text-gray-900">{selectedConversation.phone_number}</h3>
+            <div className="p-4 border-b border-border">
+              <h3 className="font-bold text-lg text-foreground">{selectedConversation.phone_number}</h3>
             </div>
-            <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50">
+            <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-muted">
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex items-start gap-2 ${msg.bot_response ? '' : 'justify-end'}`}>
-                  {msg.bot_response && <div className="w-8 h-8 bg-sky-100 rounded-full flex items-center justify-center flex-shrink-0"><Bot className="w-5 h-5 text-sky-600" /></div>}
+                  {msg.bot_response && <div className="w-8 h-8 bg-sky-100 rounded-full flex items-center justify-center flex-shrink-0"><Bot className="w-5 h-5 text-primary" /></div>}
                   <div className="flex flex-col max-w-[70%]">
-                    <div className={`p-3 rounded-2xl ${msg.bot_response ? 'bg-white text-gray-800 rounded-tl-none shadow-sm' : 'bg-sky-600 text-white rounded-tr-none'}`}>
+                    <div className={`p-3 rounded-2xl ${msg.bot_response ? 'bg-card text-secondary-foreground rounded-tl-none shadow-sm' : 'bg-primary text-primary-foreground rounded-tr-none'}`}>
                       <p className="text-sm whitespace-pre-wrap">{msg.bot_response || msg.user_message}</p>
                     </div>
                     <p className="text-xs text-gray-400 mt-1 px-1">{new Date(msg.created_at).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}</p>
@@ -106,15 +106,15 @@ export function MessagesView() {
                 </div>
               ))}
             </div>
-            <div className="p-4 border-t border-gray-200 bg-white">
+            <div className="p-4 border-t border-border bg-card">
               <div className="relative">
-                <input type="text" placeholder="Responder manualmente (em breve)..." disabled className="w-full bg-gray-100 border-gray-200 rounded-lg py-3 pl-4 pr-12 text-gray-500 cursor-not-allowed" />
+                <input type="text" placeholder="Responder manualmente (em breve)..." disabled className="w-full bg-gray-100 border-border rounded-md py-3 pl-4 pr-12 text-muted-foreground cursor-not-allowed" />
                 <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 cursor-not-allowed"><Send className="w-5 h-5" /></button>
               </div>
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-center text-gray-500">
+          <div className="flex-1 flex items-center justify-center text-center text-muted-foreground">
             <div>
               <MessageSquareIcon className="w-16 h-16 mx-auto text-gray-300" />
               <p className="mt-4">Selecione uma conversa para ver as mensagens.</p>

@@ -37,26 +37,26 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
+        <div className="min-h-screen bg-destructive/10 flex items-center justify-center p-4">
+          <div className="max-w-md w-full bg-card rounded-2xl shadow-xl p-8 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
-              <AlertTriangle className="w-8 h-8 text-red-600" />
+              <AlertTriangle className="w-8 h-8 text-destructive" />
             </div>
             
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-foreground mb-2">
               Oops! Algo deu errado
             </h1>
             
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               Ocorreu um erro inesperado. Por favor, tente novamente.
             </p>
             
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-                <p className="text-sm font-mono text-red-600 mb-2">
+              <div className="bg-muted rounded-md p-4 mb-6 text-left">
+                <p className="text-sm font-mono text-destructive mb-2">
                   {this.state.error.toString()}
                 </p>
-                <details className="text-xs text-gray-600">
+                <details className="text-xs text-muted-foreground">
                   <summary className="cursor-pointer mb-2">Stack Trace</summary>
                   <pre className="whitespace-pre-wrap">
                     {this.state.errorInfo.componentStack}
@@ -68,7 +68,7 @@ class ErrorBoundary extends React.Component {
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={this.handleRetry}
-                className="flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                className="flex items-center justify-center px-4 py-2 bg-red-600 text-primary-foreground rounded-md hover:bg-red-700 transition"
               >
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Tentar Novamente
@@ -76,7 +76,7 @@ class ErrorBoundary extends React.Component {
               
               <button
                 onClick={this.handleGoHome}
-                className="flex items-center justify-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                className="flex items-center justify-center px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 transition"
               >
                 <Home className="w-4 h-4 mr-2" />
                 Ir ao Início

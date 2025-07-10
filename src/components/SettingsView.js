@@ -54,15 +54,15 @@ function BotSettings({ tenant, showNotification }) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 lg:p-8">
-      <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center">
+    <div className="bg-card rounded-lg shadow-sm p-6 lg:p-8">
+      <h3 className="text-xl font-semibold text-foreground mb-2 flex items-center">
         <Bot className="w-5 h-5 mr-2" />
         Configurações do Assistente
       </h3>
-      <p className="text-gray-600 mb-6">Ligue o seu número de WhatsApp a esta conta para ativar o bot.</p>
+      <p className="text-muted-foreground mb-6">Ligue o seu número de WhatsApp a esta conta para ativar o bot.</p>
       <form onSubmit={handleSaveBotSettings} className="space-y-6">
         <div>
-          <label htmlFor="whatsapp_phone_number" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="whatsapp_phone_number" className="block text-sm font-medium text-foreground mb-2">
             Número de Telefone do WhatsApp (Bot)
           </label>
           <input 
@@ -71,13 +71,13 @@ function BotSettings({ tenant, showNotification }) {
             type="text"
             value={whatsappNumber}
             onChange={(e) => setWhatsappNumber(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+            className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
             placeholder="Ex: 15551234567 (sem '+')"
           />
-          <p className="text-sm text-gray-500 mt-1">Este é o número que o bot usará para receber e enviar mensagens.</p>
+          <p className="text-sm text-muted-foreground mt-1">Este é o número que o bot usará para receber e enviar mensagens.</p>
         </div>
         <div className="pt-4">
-          <button type="submit" disabled={isSaving} className="bg-sky-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-sky-700 transition flex items-center disabled:opacity-50">
+          <button type="submit" disabled={isSaving} className="bg-primary text-primary-foreground px-6 py-3 rounded-md font-semibold hover:bg-primary/90 transition flex items-center disabled:opacity-50">
             {isSaving && <Loader2 className="w-5 h-5 mr-2 animate-spin" />}
             {isSaving ? 'A guardar...' : 'Guardar Configurações do Bot'}
           </button>
@@ -143,7 +143,7 @@ export function SettingsView() {
   
   if (!tenant) {
     return (
-      <div className="text-center p-8 bg-white rounded-lg shadow-sm">
+      <div className="text-center p-8 bg-card rounded-md shadow-sm">
         Não foi possível carregar os dados do negócio. Tente fazer login novamente.
       </div>
     );
@@ -158,17 +158,17 @@ export function SettingsView() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Configurações</h2>
-        <p className="text-gray-600 mt-1">Gira as informações do seu negócio e do assistente.</p>
+        <h2 className="text-2xl font-bold text-foreground">Configurações</h2>
+        <p className="text-muted-foreground mt-1">Gira as informações do seu negócio e do assistente.</p>
       </div>
 
-      <div className="border-b border-gray-200">
+      <div className="border-b border-border">
         <nav className="-mb-px flex space-x-8">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === tab.id ? 'border-sky-500 text-sky-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+              className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === tab.id ? 'border-sky-500 text-primary' : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'}`}
             >
               <tab.icon className="w-4 h-4 mr-2" />
               {tab.label}
@@ -178,48 +178,48 @@ export function SettingsView() {
       </div>
 
       {notification.show && (
-        <div className={`p-4 rounded-lg flex items-center ${notification.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+        <div className={`p-4 rounded-md flex items-center ${notification.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-destructive/10 text-destructive'}`}>
           {notification.type === 'success' ? <CheckCircle className="w-5 h-5 mr-3" /> : <AlertCircle className="w-5 h-5 mr-3" />}
           {notification.message}
         </div>
       )}
 
       {activeTab === 'business' && (
-        <div className="bg-white rounded-xl shadow-sm p-6 lg:p-8">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6">Informações do Negócio</h3>
+        <div className="bg-card rounded-lg shadow-sm p-6 lg:p-8">
+          <h3 className="text-xl font-semibold text-foreground mb-6">Informações do Negócio</h3>
           <form onSubmit={handleSave} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="business_name" className="block text-sm font-medium text-gray-700 mb-2">Nome do Negócio</label>
-                <input id="business_name" name="business_name" type="text" value={formData.business_name} onChange={handleInputChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500" />
+                <label htmlFor="business_name" className="block text-sm font-medium text-foreground mb-2">Nome do Negócio</label>
+                <input id="business_name" name="business_name" type="text" value={formData.business_name} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring" />
               </div>
               <div>
-                <label htmlFor="business_phone" className="block text-sm font-medium text-gray-700 mb-2">Telefone de Contacto (WhatsApp)</label>
-                <input id="business_phone" name="business_phone" type="text" value={formData.business_phone} onChange={handleInputChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500" />
+                <label htmlFor="business_phone" className="block text-sm font-medium text-foreground mb-2">Telefone de Contacto (WhatsApp)</label>
+                <input id="business_phone" name="business_phone" type="text" value={formData.business_phone} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring" />
               </div>
             </div>
             <div>
-              <label htmlFor="business_address" className="block text-sm font-medium text-gray-700 mb-2">Endereço</label>
-              <input id="business_address" name="business_address" type="text" value={formData.business_address} onChange={handleInputChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500" />
+              <label htmlFor="business_address" className="block text-sm font-medium text-foreground mb-2">Endereço</label>
+              <input id="business_address" name="business_address" type="text" value={formData.business_address} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring" />
             </div>
             <div>
-              <label htmlFor="working_hours" className="block text-sm font-medium text-gray-700 mb-2">Horário de Funcionamento (Resumo)</label>
-              <input id="working_hours" name="working_hours" type="text" placeholder="Ex: Segunda a Sexta, 9h às 18h" value={formData.working_hours} onChange={handleInputChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500" />
+              <label htmlFor="working_hours" className="block text-sm font-medium text-foreground mb-2">Horário de Funcionamento (Resumo)</label>
+              <input id="working_hours" name="working_hours" type="text" placeholder="Ex: Segunda a Sexta, 9h às 18h" value={formData.working_hours} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring" />
             </div>
             <div>
-              <label htmlFor="bot_personality" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="bot_personality" className="block text-sm font-medium text-foreground mb-2">
                 <Bot className="w-4 h-4 inline-block mr-2" />
                 Personalidade do Bot
               </label>
               <textarea 
                 id="bot_personality" name="bot_personality" rows="4"
                 value={formData.bot_personality} onChange={handleInputChange} 
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+                className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
                 placeholder="Descreva como o assistente deve se comportar..."
               />
             </div>
             <div className="pt-4">
-              <button type="submit" disabled={isSaving} className="bg-sky-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-sky-700 transition flex items-center disabled:opacity-50">
+              <button type="submit" disabled={isSaving} className="bg-primary text-primary-foreground px-6 py-3 rounded-md font-semibold hover:bg-primary/90 transition flex items-center disabled:opacity-50">
                 {isSaving && <Loader2 className="w-5 h-5 mr-2 animate-spin" />}
                 {isSaving ? 'A guardar...' : 'Guardar Alterações'}
               </button>

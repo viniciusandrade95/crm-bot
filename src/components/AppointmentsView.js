@@ -10,7 +10,7 @@ import { Loader } from './ui/Feedback';
 
 const CalendarHeader = ({ currentDate, onPrevMonth, onNextMonth }) => (
   <div className="flex items-center justify-between mb-6">
-    <h2 className="text-xl font-bold text-gray-800">
+    <h2 className="text-xl font-bold text-secondary-foreground">
       {currentDate.toLocaleString('pt-PT', { month: 'long', year: 'numeric' })}
     </h2>
     <div className="flex items-center space-x-2">
@@ -23,12 +23,12 @@ const CalendarHeader = ({ currentDate, onPrevMonth, onNextMonth }) => (
 const CalendarGrid = ({ days, onDayClick, appointments }) => {
   const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   return (
-    <div className="grid grid-cols-7 gap-px bg-gray-200 border border-gray-200">
+    <div className="grid grid-cols-7 gap-px bg-secondary border border-border">
       {weekdays.map(day => (
-        <div key={day} className="text-center font-semibold text-sm py-2 bg-gray-50">{day}</div>
+        <div key={day} className="text-center font-semibold text-sm py-2 bg-muted">{day}</div>
       ))}
       {days.map((day, index) => (
-        <div key={index} onClick={() => day && onDayClick(day)} className={`p-2 h-32 bg-white relative ${day ? 'cursor-pointer hover:bg-sky-50' : 'bg-gray-50'}`}>
+        <div key={index} onClick={() => day && onDayClick(day)} className={`p-2 h-32 bg-card relative ${day ? 'cursor-pointer hover:bg-sky-50' : 'bg-muted'}`}>
           {day && <span className="text-sm">{day.getDate()}</span>}
           <div className="mt-1 space-y-1 overflow-y-auto">
             {appointments
@@ -91,13 +91,13 @@ export function AppointmentsView() {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">Agenda</h2>
-        <button onClick={() => handleDayClick(new Date())} className="bg-sky-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-sky-700 transition flex items-center">
+        <h2 className="text-2xl font-bold text-foreground">Agenda</h2>
+        <button onClick={() => handleDayClick(new Date())} className="bg-primary text-primary-foreground px-4 py-2 rounded-md font-semibold hover:bg-primary/90 transition flex items-center">
           <Plus className="w-5 h-5 mr-2" />
           Novo Agendamento
         </button>
       </div>
-      <div className="bg-white p-4 rounded-xl shadow-sm">
+      <div className="bg-card p-4 rounded-lg shadow-sm">
         <CalendarHeader 
           currentDate={currentDate}
           onPrevMonth={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))}

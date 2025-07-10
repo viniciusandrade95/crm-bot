@@ -37,13 +37,13 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-muted">
       {/* Sidebar Desktop */}
-      <aside className="hidden lg:flex w-64 bg-white border-r border-gray-200 flex-col">
-        <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
+      <aside className="hidden lg:flex w-64 bg-card border-r border-border flex-col">
+        <div className="h-16 flex items-center justify-between px-6 border-b border-border">
           <div className="flex items-center">
-            <Bot className="w-8 h-8 text-sky-600 mr-3" />
-            <h1 className="text-xl font-bold text-gray-900">WhatsApp CRM</h1>
+            <Bot className="w-8 h-8 text-primary mr-3" />
+            <h1 className="text-xl font-bold text-foreground">WhatsApp CRM</h1>
           </div>
           <NotificationSystem />
         </div>
@@ -52,8 +52,8 @@ export default function DashboardPage() {
             <button 
               key={item.id} 
               onClick={() => setCurrentView(item.id)} 
-              className={`w-full flex items-center px-4 py-3 mb-1 rounded-lg transition ${
-                currentView === item.id ? 'bg-sky-50 text-sky-600' : 'text-gray-600 hover:bg-gray-50'
+              className={`w-full flex items-center px-4 py-3 mb-1 rounded-md transition ${
+                currentView === item.id ? 'bg-sky-50 text-primary' : 'text-muted-foreground hover:bg-muted'
               }`}
             >
               <item.icon className="w-5 h-5 mr-3" />
@@ -61,13 +61,13 @@ export default function DashboardPage() {
             </button>
           ))}
         </nav>
-        <div className="p-4 border-t border-gray-200">
-          <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600 truncate">{session?.user?.email}</p>
+        <div className="p-4 border-t border-border">
+          <div className="mb-4 p-3 bg-muted rounded-md">
+            <p className="text-sm text-muted-foreground truncate">{session?.user?.email}</p>
           </div>
           <button 
             onClick={signOut} 
-            className="w-full flex items-center px-4 py-2 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition"
+            className="w-full flex items-center px-4 py-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-md transition"
           >
             <Power className="w-5 h-5 mr-3" />
             Terminar Sessão
@@ -76,17 +76,17 @@ export default function DashboardPage() {
       </aside>
 
       {/* Mobile Menu */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40">
+      <div className="lg:hidden fixed top-0 left-0 right-0 bg-card border-b border-border z-40">
         <div className="flex items-center justify-between h-16 px-4">
           <div className="flex items-center">
-            <Bot className="w-8 h-8 text-sky-600 mr-3" />
-            <h1 className="text-xl font-bold text-gray-900">CRM</h1>
+            <Bot className="w-8 h-8 text-primary mr-3" />
+            <h1 className="text-xl font-bold text-foreground">CRM</h1>
           </div>
           <div className="flex items-center space-x-4">
             <NotificationSystem />
             <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg hover:bg-gray-100"
+                className="p-2 rounded-md hover:bg-gray-100"
             >
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -94,7 +94,7 @@ export default function DashboardPage() {
         </div>
       </div>
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 bg-white z-50 pt-16">
+        <div className="lg:hidden fixed inset-0 bg-card z-50 pt-16">
           <nav className="px-4 py-6">
             {menuItems.map((item) => (
               <button
@@ -103,24 +103,24 @@ export default function DashboardPage() {
                   setCurrentView(item.id);
                   setMobileMenuOpen(false);
                 }}
-                className={`w-full flex items-center px-4 py-3 mb-1 rounded-lg ${
-                  currentView === item.id ? 'bg-sky-50 text-sky-600' : 'text-gray-600 hover:bg-gray-50'
+                className={`w-full flex items-center px-4 py-3 mb-1 rounded-md ${
+                  currentView === item.id ? 'bg-sky-50 text-primary' : 'text-muted-foreground hover:bg-muted'
                 }`}
               >
                 <item.icon className="w-5 h-5 mr-3" />
                 {item.label}
               </button>
             ))}
-            <div className="mt-8 pt-8 border-t border-gray-200">
-              <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-600 truncate">{session?.user?.email}</p>
+            <div className="mt-8 pt-8 border-t border-border">
+              <div className="mb-4 p-3 bg-muted rounded-md">
+                <p className="text-sm text-muted-foreground truncate">{session?.user?.email}</p>
               </div>
               <button
                 onClick={() => {
                   signOut();
                   setMobileMenuOpen(false);
                 }}
-                className="w-full flex items-center px-4 py-3 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-lg"
+                className="w-full flex items-center px-4 py-3 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-md"
               >
                 <Power className="w-5 h-5 mr-3" />
                 Terminar Sessão

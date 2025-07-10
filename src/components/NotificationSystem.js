@@ -46,13 +46,13 @@ export function NotificationSystem() {
   const getIcon = (type) => {
     switch (type) {
       case 'message':
-        return <MessageSquare className="w-5 h-5 text-sky-600" />;
+        return <MessageSquare className="w-5 h-5 text-primary" />;
       case 'customer':
         return <User className="w-5 h-5 text-green-600" />;
       case 'appointment':
         return <Calendar className="w-5 h-5 text-purple-600" />;
       default:
-        return <AlertCircle className="w-5 h-5 text-gray-600" />;
+        return <AlertCircle className="w-5 h-5 text-muted-foreground" />;
     }
   };
 
@@ -85,11 +85,11 @@ export function NotificationSystem() {
       {/* Botão do sino */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
+        className="relative p-2 text-muted-foreground hover:text-foreground hover:bg-gray-100 rounded-md transition"
       >
         <Bell className="w-6 h-6" />
         {hasUnread && (
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          <span className="absolute top-1 right-1 w-2 h-2 bg-destructive/100 rounded-full"></span>
         )}
       </button>
 
@@ -103,15 +103,15 @@ export function NotificationSystem() {
           ></div>
           
           {/* Painel de notificações */}
-          <div className="absolute right-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-20">
+          <div className="absolute right-0 mt-2 w-96 bg-card rounded-lg shadow-2xl border border-border z-20">
             {/* Cabeçalho */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="font-semibold text-gray-900">Notificações</h3>
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h3 className="font-semibold text-foreground">Notificações</h3>
               <div className="flex items-center space-x-2">
                 {hasUnread && (
                   <button
                     onClick={markAllAsRead}
-                    className="text-sm text-sky-600 hover:text-sky-700"
+                    className="text-sm text-primary hover:text-sky-700"
                   >
                     Marcar todas como lidas
                   </button>
@@ -128,7 +128,7 @@ export function NotificationSystem() {
             {/* Lista de notificações */}
             <div className="max-h-96 overflow-y-auto">
               {notifications.length === 0 ? (
-                <div className="p-8 text-center text-gray-500">
+                <div className="p-8 text-center text-muted-foreground">
                   <Bell className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                   <p>Sem notificações</p>
                 </div>
@@ -136,7 +136,7 @@ export function NotificationSystem() {
                 notifications.map(notification => (
                   <div
                     key={notification.id}
-                    className={`p-4 border-b border-gray-100 hover:bg-gray-50 transition ${
+                    className={`p-4 border-b border-gray-100 hover:bg-muted transition ${
                       !notification.read ? 'bg-sky-50' : ''
                     }`}
                     onClick={() => markAsRead(notification.id)}
@@ -146,10 +146,10 @@ export function NotificationSystem() {
                         {getIcon(notification.type)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium text-foreground">
                           {notification.title}
                         </p>
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-sm text-muted-foreground mt-1">
                           {notification.description}
                         </p>
                         <p className="text-xs text-gray-400 mt-2">
@@ -161,7 +161,7 @@ export function NotificationSystem() {
                           e.stopPropagation();
                           deleteNotification(notification.id);
                         }}
-                        className="flex-shrink-0 p-1 hover:bg-gray-200 rounded"
+                        className="flex-shrink-0 p-1 hover:bg-secondary rounded"
                       >
                         <X className="w-4 h-4 text-gray-400" />
                       </button>
@@ -173,8 +173,8 @@ export function NotificationSystem() {
 
             {/* Rodapé */}
             {notifications.length > 0 && (
-              <div className="p-3 text-center border-t border-gray-200">
-                <button className="text-sm text-sky-600 hover:text-sky-700 font-medium">
+              <div className="p-3 text-center border-t border-border">
+                <button className="text-sm text-primary hover:text-sky-700 font-medium">
                   Ver todas as notificações
                 </button>
               </div>

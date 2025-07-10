@@ -195,7 +195,7 @@ export function BusinessHours() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-sky-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -204,16 +204,16 @@ export function BusinessHours() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Horários de Funcionamento</h2>
-        <p className="text-gray-600 mt-1">Configure os horários e regras de agendamento do seu negócio</p>
+        <h2 className="text-2xl font-bold text-foreground">Horários de Funcionamento</h2>
+        <p className="text-muted-foreground mt-1">Configure os horários e regras de agendamento do seu negócio</p>
       </div>
 
       {/* Notificação */}
       {notification && (
-        <div className={`p-4 rounded-lg flex items-center ${
+        <div className={`p-4 rounded-md flex items-center ${
           notification.type === 'success' 
             ? 'bg-green-50 text-green-700' 
-            : 'bg-red-50 text-red-700'
+            : 'bg-destructive/10 text-destructive'
         }`}>
           {notification.type === 'success' 
             ? <CheckCircle className="w-5 h-5 mr-3" /> 
@@ -224,24 +224,24 @@ export function BusinessHours() {
       )}
 
       {/* Horários por dia da semana */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+      <div className="bg-card rounded-lg shadow-sm p-6">
+        <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center">
           <Clock className="w-5 h-5 mr-2" />
           Horário Semanal
         </h3>
 
         <div className="space-y-4">
           {businessHours.map((hour, index) => (
-            <div key={index} className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center p-4 bg-gray-50 rounded-lg">
+            <div key={index} className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center p-4 bg-muted rounded-md">
               {/* Dia da semana */}
               <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
                   checked={hour.is_open}
                   onChange={() => handleDayToggle(index)}
-                  className="w-5 h-5 text-sky-600 rounded focus:ring-sky-500"
+                  className="w-5 h-5 text-primary rounded focus:ring-ring"
                 />
-                <label className="font-medium text-gray-700">
+                <label className="font-medium text-foreground">
                   {daysOfWeek[index].name}
                 </label>
               </div>
@@ -250,22 +250,22 @@ export function BusinessHours() {
               {hour.is_open ? (
                 <>
                   <div>
-                    <label className="block text-sm text-gray-600 mb-1">Abertura</label>
+                    <label className="block text-sm text-muted-foreground mb-1">Abertura</label>
                     <input
                       type="time"
                       value={hour.open_time || ''}
                       onChange={(e) => handleTimeChange(index, 'open_time', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+                      className="w-full px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm text-gray-600 mb-1">Fecho</label>
+                    <label className="block text-sm text-muted-foreground mb-1">Fecho</label>
                     <input
                       type="time"
                       value={hour.close_time || ''}
                       onChange={(e) => handleTimeChange(index, 'close_time', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+                      className="w-full px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
                     />
                   </div>
 
@@ -276,15 +276,15 @@ export function BusinessHours() {
                       value={hour.break_start || ''}
                       onChange={(e) => handleTimeChange(index, 'break_start', e.target.value)}
                       placeholder="Início pausa"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+                      className="flex-1 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
                     />
-                    <span className="text-gray-500">-</span>
+                    <span className="text-muted-foreground">-</span>
                     <input
                       type="time"
                       value={hour.break_end || ''}
                       onChange={(e) => handleTimeChange(index, 'break_end', e.target.value)}
                       placeholder="Fim pausa"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+                      className="flex-1 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
                     />
                   </div>
 
@@ -294,14 +294,14 @@ export function BusinessHours() {
                         handleTimeChange(index, 'break_start', null);
                         handleTimeChange(index, 'break_end', null);
                       }}
-                      className="text-sm text-gray-500 hover:text-red-600"
+                      className="text-sm text-muted-foreground hover:text-destructive"
                     >
                       Sem pausa
                     </button>
                   </div>
                 </>
               ) : (
-                <div className="md:col-span-5 text-gray-500 italic">Fechado</div>
+                <div className="md:col-span-5 text-muted-foreground italic">Fechado</div>
               )}
             </div>
           ))}
@@ -309,76 +309,76 @@ export function BusinessHours() {
       </div>
 
       {/* Configurações de Agendamento */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+      <div className="bg-card rounded-lg shadow-sm p-6">
+        <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center">
           <Calendar className="w-5 h-5 mr-2" />
           Regras de Agendamento
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Duração padrão dos serviços (minutos)
             </label>
             <input
               type="number"
               value={bookingSettings.slot_duration}
               onChange={(e) => handleSettingChange('slot_duration', parseInt(e.target.value))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
               min="15"
               step="15"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Tempo entre marcações (minutos)
             </label>
             <input
               type="number"
               value={bookingSettings.buffer_time}
               onChange={(e) => handleSettingChange('buffer_time', parseInt(e.target.value))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
               min="0"
               step="5"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Antecedência máxima (dias)
             </label>
             <input
               type="number"
               value={bookingSettings.advance_booking_days}
               onChange={(e) => handleSettingChange('advance_booking_days', parseInt(e.target.value))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
               min="1"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Antecedência mínima (horas)
             </label>
             <input
               type="number"
               value={bookingSettings.min_advance_hours}
               onChange={(e) => handleSettingChange('min_advance_hours', parseInt(e.target.value))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
               min="0"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Máximo de marcações por dia
             </label>
             <input
               type="number"
               value={bookingSettings.max_bookings_per_day || ''}
               onChange={(e) => handleSettingChange('max_bookings_per_day', e.target.value ? parseInt(e.target.value) : null)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
               placeholder="Sem limite"
               min="1"
             />
@@ -390,9 +390,9 @@ export function BusinessHours() {
               id="multiple-bookings"
               checked={bookingSettings.allow_multiple_bookings}
               onChange={(e) => handleSettingChange('allow_multiple_bookings', e.target.checked)}
-              className="w-5 h-5 text-sky-600 rounded focus:ring-sky-500"
+              className="w-5 h-5 text-primary rounded focus:ring-ring"
             />
-            <label htmlFor="multiple-bookings" className="text-sm font-medium text-gray-700">
+            <label htmlFor="multiple-bookings" className="text-sm font-medium text-foreground">
               Permitir marcações simultâneas
             </label>
           </div>
@@ -400,15 +400,15 @@ export function BusinessHours() {
       </div>
 
       {/* Dias Especiais */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
+      <div className="bg-card rounded-lg shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+          <h3 className="text-lg font-semibold text-foreground flex items-center">
             <Calendar className="w-5 h-5 mr-2" />
             Dias Especiais (Feriados, Férias, etc)
           </h3>
           <button
             onClick={addSpecialDay}
-            className="flex items-center px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition"
+            className="flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition"
           >
             <Plus className="w-4 h-4 mr-2" />
             Adicionar
@@ -416,18 +416,18 @@ export function BusinessHours() {
         </div>
 
         {specialDays.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">
+          <p className="text-muted-foreground text-center py-8">
             Nenhum dia especial configurado
           </p>
         ) : (
           <div className="space-y-3">
             {specialDays.map((day) => (
-              <div key={day.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+              <div key={day.id} className="flex items-center space-x-4 p-4 bg-muted rounded-md">
                 <input
                   type="date"
                   value={day.date || ''}
                   onChange={(e) => updateSpecialDay(day.id, 'date', e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+                  className="px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
                   min={new Date().toISOString().split('T')[0]}
                 />
 
@@ -436,7 +436,7 @@ export function BusinessHours() {
                   value={day.reason || ''}
                   onChange={(e) => updateSpecialDay(day.id, 'reason', e.target.value)}
                   placeholder="Motivo (ex: Feriado Nacional)"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+                  className="flex-1 px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-ring"
                 />
 
                 <label className="flex items-center space-x-2">
@@ -444,14 +444,14 @@ export function BusinessHours() {
                     type="checkbox"
                     checked={day.is_closed}
                     onChange={(e) => updateSpecialDay(day.id, 'is_closed', e.target.checked)}
-                    className="w-4 h-4 text-sky-600 rounded focus:ring-sky-500"
+                    className="w-4 h-4 text-primary rounded focus:ring-ring"
                   />
-                  <span className="text-sm text-gray-700">Fechado</span>
+                  <span className="text-sm text-foreground">Fechado</span>
                 </label>
 
                 <button
                   onClick={() => removeSpecialDay(day.id)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                  className="p-2 text-destructive hover:bg-destructive/10 rounded-md transition"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -466,7 +466,7 @@ export function BusinessHours() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center px-6 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 disabled:opacity-50 transition"
+          className="flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 transition"
         >
           {saving ? (
             <>

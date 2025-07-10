@@ -50,12 +50,12 @@ const MiniCalendar = ({ appointments = [] }) => {
   };
   
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm">
+    <div className="bg-card p-6 rounded-lg shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-foreground">
           {monthNames[currentMonth]} {currentYear}
         </h3>
-        <button className="text-sky-600 hover:text-sky-700 text-sm font-medium flex items-center">
+        <button className="text-primary hover:text-sky-700 text-sm font-medium flex items-center">
           Ver calendário completo
           <ChevronRight className="w-4 h-4 ml-1" />
         </button>
@@ -63,7 +63,7 @@ const MiniCalendar = ({ appointments = [] }) => {
       
       <div className="grid grid-cols-7 gap-1">
         {days.map((day, index) => (
-          <div key={index} className="text-center text-xs font-medium text-gray-500 pb-2">
+          <div key={index} className="text-center text-xs font-medium text-muted-foreground pb-2">
             {day}
           </div>
         ))}
@@ -73,26 +73,26 @@ const MiniCalendar = ({ appointments = [] }) => {
             key={index}
             className={`
               aspect-square flex items-center justify-center text-sm relative
-              ${!day ? '' : 'hover:bg-gray-50 cursor-pointer rounded-lg'}
+              ${!day ? '' : 'hover:bg-muted cursor-pointer rounded-md'}
               ${day === today.getDate() ? 'bg-sky-100 text-sky-700 font-bold' : ''}
             `}
           >
             {day}
             {day && hasAppointment(day) && (
-              <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-sky-600 rounded-full"></div>
+              <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full"></div>
             )}
           </div>
         ))}
       </div>
       
-      <div className="mt-4 pt-4 border-t border-gray-200">
+      <div className="mt-4 pt-4 border-t border-border">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">Marcações hoje</span>
-          <span className="font-semibold text-gray-900">3</span>
+          <span className="text-muted-foreground">Marcações hoje</span>
+          <span className="font-semibold text-foreground">3</span>
         </div>
         <div className="flex items-center justify-between text-sm mt-2">
-          <span className="text-gray-600">Próxima marcação</span>
-          <span className="font-semibold text-sky-600">14:30</span>
+          <span className="text-muted-foreground">Próxima marcação</span>
+          <span className="font-semibold text-primary">14:30</span>
         </div>
       </div>
     </div>
@@ -136,23 +136,23 @@ const GettingStarted = ({ tenant, onNavigate }) => {
   const progress = (completedSteps / steps.length) * 100;
   
   return (
-    <div className="bg-gradient-to-br from-sky-50 to-indigo-50 rounded-xl p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+    <div className="bg-gradient-to-br from-sky-50 to-indigo-50 rounded-lg p-6">
+      <h3 className="text-lg font-semibold text-foreground mb-2">
         Configuração Inicial
       </h3>
-      <p className="text-sm text-gray-600 mb-4">
+      <p className="text-sm text-muted-foreground mb-4">
         Complete estes passos para começar a usar o sistema
       </p>
       
       {/* Barra de progresso */}
       <div className="mb-6">
         <div className="flex items-center justify-between text-sm mb-2">
-          <span className="text-gray-600">Progresso</span>
-          <span className="font-medium text-gray-900">{completedSteps} de {steps.length}</span>
+          <span className="text-muted-foreground">Progresso</span>
+          <span className="font-medium text-foreground">{completedSteps} de {steps.length}</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-secondary rounded-full h-2">
           <div 
-            className="bg-sky-600 h-2 rounded-full transition-all duration-300"
+            className="bg-primary h-2 rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -164,25 +164,25 @@ const GettingStarted = ({ tenant, onNavigate }) => {
           <div 
             key={index} 
             className={`
-              flex items-center justify-between p-3 rounded-lg
-              ${step.completed ? 'bg-green-50' : 'bg-white'}
+              flex items-center justify-between p-3 rounded-md
+              ${step.completed ? 'bg-green-50' : 'bg-card'}
             `}
           >
             <div className="flex items-start space-x-3">
               {step.completed ? (
                 <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
               ) : (
-                <div className="w-5 h-5 rounded-full border-2 border-gray-300 mt-0.5" />
+                <div className="w-5 h-5 rounded-full border-2 border-border mt-0.5" />
               )}
               <div>
-                <p className="font-medium text-gray-900 text-sm">{step.title}</p>
-                <p className="text-xs text-gray-500">{step.description}</p>
+                <p className="font-medium text-foreground text-sm">{step.title}</p>
+                <p className="text-xs text-muted-foreground">{step.description}</p>
               </div>
             </div>
             {!step.completed && (
               <button 
                 onClick={() => onNavigate(step.link)}
-                className="text-sky-600 hover:text-sky-700 text-sm font-medium"
+                className="text-primary hover:text-sky-700 text-sm font-medium"
               >
                 {step.action}
               </button>
@@ -250,10 +250,10 @@ export default function DashboardOverview({ onNavigate }) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-foreground">
             Olá{tenant?.business_name ? `, ${tenant.business_name}` : ''}! 👋
           </h2>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             {isNewUser 
               ? 'Vamos configurar o seu assistente virtual'
               : 'Aqui está o resumo do seu negócio'}
@@ -264,30 +264,30 @@ export default function DashboardOverview({ onNavigate }) {
           <div className="flex gap-2">
             <button
               onClick={() => setTimeFilter('today')}
-              className={`px-4 py-2 rounded-lg font-medium transition ${
+              className={`px-4 py-2 rounded-md font-medium transition ${
                 timeFilter === 'today' 
                   ? 'bg-sky-100 text-sky-700' 
-                  : 'bg-white text-gray-600 hover:bg-gray-50'
+                  : 'bg-card text-muted-foreground hover:bg-muted'
               }`}
             >
               Hoje
             </button>
             <button
               onClick={() => setTimeFilter('week')}
-              className={`px-4 py-2 rounded-lg font-medium transition ${
+              className={`px-4 py-2 rounded-md font-medium transition ${
                 timeFilter === 'week' 
                   ? 'bg-sky-100 text-sky-700' 
-                  : 'bg-white text-gray-600 hover:bg-gray-50'
+                  : 'bg-card text-muted-foreground hover:bg-muted'
               }`}
             >
               Semana
             </button>
             <button
               onClick={() => setTimeFilter('month')}
-              className={`px-4 py-2 rounded-lg font-medium transition ${
+              className={`px-4 py-2 rounded-md font-medium transition ${
                 timeFilter === 'month' 
                   ? 'bg-sky-100 text-sky-700' 
-                  : 'bg-white text-gray-600 hover:bg-gray-50'
+                  : 'bg-card text-muted-foreground hover:bg-muted'
               }`}
             >
               Mês
@@ -303,53 +303,53 @@ export default function DashboardOverview({ onNavigate }) {
           <GettingStarted tenant={tenant} onNavigate={onNavigate} />
             
             {/* Quick Actions */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-card rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
                 Ações Rápidas
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button 
                   onClick={() => onNavigate('services')}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group"
+                  className="flex items-center justify-between p-4 border border-border rounded-md hover:border-sky-500 hover:bg-sky-50 transition group"
                 >
                   <div className="flex items-center space-x-3">
-                    <Tag className="w-5 h-5 text-gray-400 group-hover:text-sky-600" />
-                    <span className="font-medium text-gray-700">Adicionar Serviço</span>
+                    <Tag className="w-5 h-5 text-gray-400 group-hover:text-primary" />
+                    <span className="font-medium text-foreground">Adicionar Serviço</span>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-sky-600" />
+                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary" />
                 </button>
                 
                 <button 
                   onClick={() => onNavigate('settings')}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group"
+                  className="flex items-center justify-between p-4 border border-border rounded-md hover:border-sky-500 hover:bg-sky-50 transition group"
                 >
                   <div className="flex items-center space-x-3">
-                    <Settings className="w-5 h-5 text-gray-400 group-hover:text-sky-600" />
-                    <span className="font-medium text-gray-700">Configurar Horários</span>
+                    <Settings className="w-5 h-5 text-gray-400 group-hover:text-primary" />
+                    <span className="font-medium text-foreground">Configurar Horários</span>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-sky-600" />
+                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary" />
                 </button>
                 
                 <button 
                   onClick={() => onNavigate('customers')}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group"
+                  className="flex items-center justify-between p-4 border border-border rounded-md hover:border-sky-500 hover:bg-sky-50 transition group"
                 >
                   <div className="flex items-center space-x-3">
-                    <Users className="w-5 h-5 text-gray-400 group-hover:text-sky-600" />
-                    <span className="font-medium text-gray-700">Importar Clientes</span>
+                    <Users className="w-5 h-5 text-gray-400 group-hover:text-primary" />
+                    <span className="font-medium text-foreground">Importar Clientes</span>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-sky-600" />
+                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary" />
                 </button>
                 
                 <button 
                   onClick={() => onNavigate('messages')}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition group"
+                  className="flex items-center justify-between p-4 border border-border rounded-md hover:border-sky-500 hover:bg-sky-50 transition group"
                 >
                   <div className="flex items-center space-x-3">
-                    <MessageSquare className="w-5 h-5 text-gray-400 group-hover:text-sky-600" />
-                    <span className="font-medium text-gray-700">Testar Assistente</span>
+                    <MessageSquare className="w-5 h-5 text-gray-400 group-hover:text-primary" />
+                    <span className="font-medium text-foreground">Testar Assistente</span>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-sky-600" />
+                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary" />
                 </button>
               </div>
             </div>
@@ -359,7 +359,7 @@ export default function DashboardOverview({ onNavigate }) {
             <MiniCalendar />
             
             {/* Dicas */}
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
               <div className="flex items-start space-x-3">
                 <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                 <div>
@@ -376,61 +376,61 @@ export default function DashboardOverview({ onNavigate }) {
         <>
           {/* Métricas para utilizadores com dados */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition">
+            <div className="bg-card p-6 rounded-lg shadow-sm hover:shadow-md transition">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-sky-100 rounded-lg">
-                  <MessageSquare className="w-6 h-6 text-sky-600" />
+                <div className="p-3 bg-sky-100 rounded-md">
+                  <MessageSquare className="w-6 h-6 text-primary" />
                 </div>
                 <span className="text-sm font-medium text-green-600">+12%</span>
               </div>
-              <h3 className="text-sm font-medium text-gray-500">Mensagens</h3>
-              <p className="text-3xl font-bold text-gray-900 mt-1">
+              <h3 className="text-sm font-medium text-muted-foreground">Mensagens</h3>
+              <p className="text-3xl font-bold text-foreground mt-1">
                 {timeFilter === 'today' ? stats.messages_today :
                  timeFilter === 'week' ? stats.messages_this_week :
                  stats.messages_this_month}
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition">
+            <div className="bg-card p-6 rounded-lg shadow-sm hover:shadow-md transition">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-green-100 rounded-lg">
+                <div className="p-3 bg-green-100 rounded-md">
                   <Users className="w-6 h-6 text-green-600" />
                 </div>
                 <Activity className="w-4 h-4 text-gray-400" />
               </div>
-              <h3 className="text-sm font-medium text-gray-500">Clientes Ativos</h3>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{stats.unique_customers}</p>
+              <h3 className="text-sm font-medium text-muted-foreground">Clientes Ativos</h3>
+              <p className="text-3xl font-bold text-foreground mt-1">{stats.unique_customers}</p>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition">
+            <div className="bg-card p-6 rounded-lg shadow-sm hover:shadow-md transition">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-purple-100 rounded-lg">
+                <div className="p-3 bg-purple-100 rounded-md">
                   <Zap className="w-6 h-6 text-purple-600" />
                 </div>
                 <TrendingUp className="w-4 h-4 text-green-500" />
               </div>
-              <h3 className="text-sm font-medium text-gray-500">Taxa de Resposta</h3>
-              <p className="text-3xl font-bold text-gray-900 mt-1">
+              <h3 className="text-sm font-medium text-muted-foreground">Taxa de Resposta</h3>
+              <p className="text-3xl font-bold text-foreground mt-1">
                 {Math.round(stats.response_rate)}%
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition">
+            <div className="bg-card p-6 rounded-lg shadow-sm hover:shadow-md transition">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-amber-100 rounded-lg">
+                <div className="p-3 bg-amber-100 rounded-md">
                   <Tag className="w-6 h-6 text-amber-600" />
                 </div>
                 <Clock className="w-4 h-4 text-gray-400" />
               </div>
-              <h3 className="text-sm font-medium text-gray-500">Serviços</h3>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{stats.total_services}</p>
+              <h3 className="text-sm font-medium text-muted-foreground">Serviços</h3>
+              <p className="text-3xl font-bold text-foreground mt-1">{stats.total_services}</p>
             </div>
           </div>
 
           {/* Gráficos e calendário */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <div className="lg:col-span-2 bg-card rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
                 <BarChart3 className="w-5 h-5 mr-2" />
                 Atividade Semanal
               </h3>
